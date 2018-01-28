@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Mars</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+</head>
+
+<body>
+    <div id="color-magnitude"></div>
+    <div id="orbital-params"></div>
+    <select id="selDataset" onchange="optionChanged(this.value)">
+      
+    </select>
+    <script>
+        
+        function optionChanged(sample) {
+            Plotly.d3.json("/samples/"+sample, function(error, d) {
+                if (error) return console.warn(error);
+                else {
+                    var labe = []
+            var val = []
+            for (var i = 0; i < d["otu_ids"].length; i++) {
+                labe.push(d["otu_ids"][i])
+            }
+            for (var i = 0; i < d["sample_values"].length; i++) {
+                val.push(d["sample_values"][i])
+            }
+            
+            var trace1 = {
+                labels: labe,
+                values: val,
+                type: 'pie'
+                };
+                var data = [trace1];
+                var layout = {
+                title: "'Bar' Chart",
+                };
+                Plotly.newPlot("color-magnitude", data, layout);
+                }
+            }
+        )
+        }
+        
+        function getData() {
+            Plotly.d3.json("/names", function(error, data){
+              var ddd = document.getElementById("selDataset");
+                if (error) return console.warn(error);
+                for (var c = 0; c<data.length;c++ ) {
+                  var x = document.createElement("OPTION");
+                  x.append(data[c])
+                  ddd.appendChild(x)
+                }
+            }
+        )
+            // Plotly.d3.json("/parameters", function(error, data){
+            //     if (error) return console.warn(error);
+            //     build_orbital_parameters_plot(data);
+            // })
+        }
+        getData();
+    </script>
+</body>
+
+</html>
+
